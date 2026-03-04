@@ -1,0 +1,22 @@
+<h2>Архив сообщений</h2>
+
+{% if messages %}
+    {% for msg in messages %}
+        <p style="color: green;">{{ msg }}</p>
+    {% endfor %}
+{% endif %}
+
+{% for msg in messages %}
+    <div>
+        {{ msg.text }} ({{ msg.timestamp }})
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="restore_id" value="{{ msg.id }}">
+            <button>Восстановить</button>
+        </form>
+    </div>
+{% empty %}
+    <p>Архив пуст</p>
+{% endfor %}
+
+<a href="{% url 'chat' %}">Назад в чат</a>

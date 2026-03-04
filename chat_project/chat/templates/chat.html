@@ -1,0 +1,54 @@
+<h2>Чат</h2>
+<p>Пользователь: <b>{{ user.username }}</b></p>
+
+{% if messages %}
+    {% for msg in messages %}
+        <p style="color: green;">{{ msg }}</p>
+    {% endfor %}
+{% endif %}
+
+
+<form method="get">
+    <input type="date" name="date">
+    <button type="submit">Фильтр</button>
+</form>
+
+<hr>
+
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Отправить</button>
+</form>
+
+<hr>
+
+
+{% for msg in messages %}
+    <div style="border:1px solid #ccc; margin:5px; padding:5px;">
+        <b>{{ msg.user.username }}</b>:
+        {{ msg.text }}
+        <br>
+        <small>{{ msg.timestamp }}</small>
+
+        {% if msg.user == user %}
+         
+            <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="edit_message_id" value="{{ msg.id }}">
+                <input type="text" name="text" value="{{ msg.text }}">
+                <button>Сохранить</button>
+            </form>
+
+           
+            <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="delete_message_id" value="{{ msg.id }}">
+                <button>Удалить</button>
+            </form>
+        {% endif %}
+    </div>
+{% endfor %}
+
+<a href="{% url 'archive' %}">Архив сообщений</a>
